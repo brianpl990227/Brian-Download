@@ -41,16 +41,22 @@ try
                 string fileName = Path.GetFileName(new Uri(hrefValue).AbsolutePath);
                 if (!String.IsNullOrEmpty(fileName))
                 {
+                    if (!Directory.Exists("Descargas"))
+                    {
+                        Directory.CreateDirectory("Descargas");
+                    }
+
+                    var name = Uri.UnescapeDataString(fileName);
+                    var path = Path.Combine(AppContext.BaseDirectory, "Descargas", name);
+                    if (File.Exists(path))
+                    {
+                        continue;
+                    }
                     try
                     {
-                        if (!Directory.Exists("Descargas"))
-                        {
-                            Directory.CreateDirectory("Descargas");
-                        }
 
                         using var response = await client.GetAsync(hrefValue, HttpCompletionOption.ResponseHeadersRead);
-                        var name = Uri.UnescapeDataString(fileName);
-                        var path = Path.Combine(AppContext.BaseDirectory, "Descargas", name);
+
                         using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
                         using var stream = await response.Content.ReadAsStreamAsync();
                         var test = Console.IsOutputRedirected;
@@ -85,6 +91,7 @@ try
                     {
                         Console.WriteLine("Error al descargar el archivo: " + fileName);
                         Console.WriteLine(e.Message);
+                        File.Delete(path);
                     }
                 }
             }
