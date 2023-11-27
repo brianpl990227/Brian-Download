@@ -16,6 +16,7 @@ Console.WriteLine("-------------------------------------------------");
 
 Console.Write("Pega la Url:");
 string url = Console.ReadLine();
+Console.WriteLine("Obteniendo información de directorios");
 HttpClient client = new HttpClient();
 try
 {
