@@ -2,7 +2,6 @@
 using System.Net;
 using System.Text.RegularExpressions;
 using Figgle;
-using HtmlAgilityPack;
 using XUCore.ShellProgressBar;
 
 
@@ -42,6 +41,7 @@ try
                 string fileName = Path.GetFileName(new Uri(hrefValue).AbsolutePath);
                 if (!String.IsNullOrEmpty(fileName))
                 {
+                    Console.WriteLine("");
                     if (!Directory.Exists("Descargas"))
                     {
                         Directory.CreateDirectory("Descargas");
@@ -51,6 +51,7 @@ try
                     var path = Path.Combine(AppContext.BaseDirectory, "Descargas", name);
                     if (File.Exists(path))
                     {
+                        Console.WriteLine($"El fichero {name} ya existe");
                         continue;
                     }
                     try
@@ -60,14 +61,18 @@ try
 
                         using var fileStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
                         using var stream = await response.Content.ReadAsStreamAsync();
-                        var test = Console.IsOutputRedirected;
-                        using (var pbar = new ProgressBar((int)response.Content.Headers.ContentLength, $"Descargando {name}..."))
-                        {
 
+                        var options = new ProgressBarOptions
+                        {
+                            DisplayTimeInRealTime = true,
+                            ProgressBarOnBottom = true                           
+                        };
+                        using (var pbar = new ProgressBar((int)response.Content.Headers.ContentLength, $"Comenzando descarga de {name}", options))
+                        {
                             var totalRead = 0L;
                             var buffer = new byte[8192];
                             var isMoreToRead = true;
-
+                            var lastPercentage = 0.0;
                             do
                             {
                                 var read = await stream.ReadAsync(buffer, 0, buffer.Length);
@@ -81,7 +86,14 @@ try
 
                                     totalRead += read;
                                     var percentage = (double)totalRead / response.Content.Headers.ContentLength.Value * 100;
-                                    pbar.Tick(read, $"Descargando {name}... {percentage:0.00}% completado");
+                                    if (Math.Floor(percentage) > Math.Floor(lastPercentage))
+                                    {
+                                        pbar.Tick($"{name}");
+                                        lastPercentage = percentage;
+                                        var progress = pbar.AsProgress<double>();
+                                        progress.Report(lastPercentage/100);
+                                    }
+
                                 }
                             } while (isMoreToRead);
 
@@ -98,9 +110,11 @@ try
             }
         }
     }
+    Console.WriteLine("\nDescarga completada :)");
+    Console.ReadLine();
 }
 catch
 {
-    Console.WriteLine("Tienes problemas de red");
+    Console.WriteLine("Tienes la conexión muy lenta");
     Console.ReadLine();
 }
