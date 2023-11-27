@@ -10,7 +10,7 @@ using XUCore.ShellProgressBar;
 Console.WriteLine("-------------------------------------------------");
 Console.WriteLine(FiggleFonts.Standard.Render("Brian - Download"));
 Console.WriteLine("Descarga directorios enteros de https://visuales.uclv.cu");
-Console.WriteLine("Github: https://github.com/brianpl990227/brian-d");
+Console.WriteLine("Github: https://github.com/brianpl990227/Brian-Download");
 Console.WriteLine("-------------------------------------------------");
 
 
