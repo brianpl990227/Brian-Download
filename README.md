@@ -6,7 +6,7 @@ Vas a https://visuales.uclv.cu y buscas la carpeta que quieras descargar, en est
 
 Abrimos el programa, la pegamos y damos enter
 
-![EBRIAN TRABAJOEstudioBrian DownloadbinDebugnet8 0BrianDownload exe](https://github.com/brianpl990227/Brian-Download/assets/42151736/27d1d6eb-a04d-475d-a087-d40a4466caab)
+![EBRIAN TRABAJOEstudioBrian DownloadbinReleasenet8 0win-x64publishBrianDownload exe](https://github.com/brianpl990227/Brian-Download/assets/42151736/82f3845e-6828-4c44-9a00-9d0511a42897)
 
 Y listo
 
