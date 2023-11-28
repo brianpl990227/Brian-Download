@@ -9,7 +9,3 @@ Abrimos el programa, la pegamos y damos enter
 ![EBRIAN TRABAJOEstudioBrian DownloadbinReleasenet8 0win-x64publishBrianDownload exe](https://github.com/brianpl990227/Brian-Download/assets/42151736/82f3845e-6828-4c44-9a00-9d0511a42897)
 
 Y listo
-
-PD: La pereza obliga a hacer cosas, que pesado era descargar fichero por fichero
-
-
