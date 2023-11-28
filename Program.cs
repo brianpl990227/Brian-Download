@@ -22,7 +22,31 @@ try
 
 
     string html = await client.GetStringAsync(url);
+    int totalFiles = 0;
+    MatchCollection tdMatchesCount = Regex.Matches(html, "<td[^>]*>(.*?)</td>", RegexOptions.Singleline);
+    foreach (Match tdMatch in tdMatchesCount)
+    {
+        // Extraer los href dentro de cada td
+        MatchCollection hrefMatches = Regex.Matches(tdMatch.Value, "<a[^>]*href=\"(.*?)\"[^>]*>", RegexOptions.Singleline);
 
+        foreach (Match hrefMatch in hrefMatches)
+        {
+            Uri baseUri = new Uri(url);
+            string hrefValue = $"https://{baseUri.Host}{baseUri.AbsolutePath}{hrefMatch.Groups[1].Value}";
+
+            // Comprobar si el href es una URL
+            if (Uri.IsWellFormedUriString(hrefValue, UriKind.Absolute))
+            {
+                string fileName = Path.GetFileName(new Uri(hrefValue).AbsolutePath);
+                if (!String.IsNullOrEmpty(fileName))
+                {
+                    totalFiles++;
+                }
+            }
+        }
+    }
+
+    var currentFile = 0;
     // Extraer los td del html
     MatchCollection tdMatches = Regex.Matches(html, "<td[^>]*>(.*?)</td>", RegexOptions.Singleline);
     foreach (Match tdMatch in tdMatches)
@@ -41,6 +65,7 @@ try
                 string fileName = Path.GetFileName(new Uri(hrefValue).AbsolutePath);
                 if (!String.IsNullOrEmpty(fileName))
                 {
+                    currentFile++;
                     Console.WriteLine("");
                     if (!Directory.Exists("Descargas"))
                     {
@@ -65,7 +90,7 @@ try
                         var options = new ProgressBarOptions
                         {
                             DisplayTimeInRealTime = true,
-                            ProgressBarOnBottom = true                           
+                            ProgressBarOnBottom = true
                         };
                         using (var pbar = new ProgressBar((int)response.Content.Headers.ContentLength, $"Comenzando descarga de {name}", options))
                         {
@@ -88,10 +113,10 @@ try
                                     var percentage = (double)totalRead / response.Content.Headers.ContentLength.Value * 100;
                                     if (Math.Floor(percentage) > Math.Floor(lastPercentage))
                                     {
-                                        pbar.Tick($"{name}");
+                                        pbar.Tick($"{name} | archivo {currentFile} de {totalFiles}");
                                         lastPercentage = percentage;
                                         var progress = pbar.AsProgress<double>();
-                                        progress.Report(lastPercentage/100);
+                                        progress.Report(lastPercentage / 100);
                                     }
 
                                 }
